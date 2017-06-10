@@ -635,6 +635,15 @@ static Result<Success> queue_fs_event(int code) {
     return Error() << "Invalid code: " << code;
 }
 
+static Result<Success> do_install_keyring(const BuiltinArguments& args) {
+    if (fscrypt_install_keyring()) {
+        return Error() << "failed to install keyring";
+    }
+    property_set("ro.crypto.state", "encrypted");
+    property_set("ro.crypto.type", "file");
+    return Success();
+}
+
 /* mount_all <fstab> [ <path> ]* [--<options>]*
  *
  * This function might request a reboot, in which case it will
@@ -1229,6 +1238,7 @@ const BuiltinFunctionMap::Map& BuiltinFunctionMap::map() const {
         {"init_user0",              {0,     0,    {false,  do_init_user0}}},
         {"insmod",                  {1,     kMax, {true,   do_insmod}}},
         {"installkey",              {1,     1,    {false,  do_installkey}}},
+        {"install_keyring",         {0,     0,    {true,   do_install_keyring}}},
         {"interface_restart",       {1,     1,    {false,  do_interface_restart}}},
         {"interface_start",         {1,     1,    {false,  do_interface_start}}},
         {"interface_stop",          {1,     1,    {false,  do_interface_stop}}},
