@@ -98,58 +98,9 @@ bool ReadDtFile(const std::string& file_name, std::string* dt_value) {
     return false;
 }
 
-const std::array<const char*, 3> kFileContentsEncryptionMode = {
-        "aes-256-xts",
-        "adiantum",
-        "ice",
-};
-
-const std::array<const char*, 3> kFileNamesEncryptionMode = {
-        "aes-256-cts",
-        "aes-256-heh",
-        "adiantum",
-};
-
 void ParseFileEncryption(const std::string& arg, FstabEntry* entry) {
-    // The fileencryption flag is followed by an = and the mode of contents encryption, then
-    // optionally a and the mode of filenames encryption (defaults to aes-256-cts).  Get it and
-    // return it.
     entry->fs_mgr_flags.file_encryption = true;
-
-    auto parts = Split(arg, ":");
-    if (parts.empty() || parts.size() > 2) {
-        LWARNING << "Warning: fileencryption= flag malformed: " << arg;
-        return;
-    }
-
-    // Alias for backwards compatibility.
-    if (parts[0] == "software") {
-        parts[0] = "aes-256-xts";
-    }
-
-    if (std::find(kFileContentsEncryptionMode.begin(), kFileContentsEncryptionMode.end(),
-                  parts[0]) == kFileContentsEncryptionMode.end()) {
-        LWARNING << "fileencryption= flag malformed, file contents encryption mode not found: "
-                 << arg;
-        return;
-    }
-
-    entry->file_contents_mode = parts[0];
-
-    if (parts.size() == 2) {
-        if (std::find(kFileNamesEncryptionMode.begin(), kFileNamesEncryptionMode.end(), parts[1]) ==
-            kFileNamesEncryptionMode.end()) {
-            LWARNING << "fileencryption= flag malformed, file names encryption mode not found: "
-                     << arg;
-            return;
-        }
-
-        entry->file_names_mode = parts[1];
-    } else if (entry->file_contents_mode == "adiantum") {
-        entry->file_names_mode = "adiantum";
-    } else {
-        entry->file_names_mode = "aes-256-cts";
-    }
+    entry->encryption_options = arg;
 }
 
 bool SetMountFlag(const std::string& flag, FstabEntry* entry) {
@@ -277,8 +228,7 @@ void ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             // return it.
             entry->fs_mgr_flags.force_fde_or_fbe = true;
             entry->key_loc = arg;
-            entry->file_contents_mode = "aes-256-xts";
-            entry->file_names_mode = "aes-256-cts";
+            entry->encryption_options = "aes-256-xts:aes-256-cts";
         } else if (StartsWith(flag, "max_comp_streams=")) {
             if (!ParseInt(arg, &entry->max_comp_streams)) {
                 LWARNING << "Warning: max_comp_streams= flag malformed: " << arg;
