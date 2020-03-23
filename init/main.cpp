@@ -73,6 +73,5 @@ int main(int argc, char** argv) {
             return SecondStageMain(argc, argv);
         }
     }
-
     return FirstStageMain(argc, argv);
 }

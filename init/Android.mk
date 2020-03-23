@@ -38,6 +38,7 @@ init_cflags += \
     -Wall -Wextra \
     -Wno-unused-parameter \
     -Werror \
+    -static
 
 # --
 
@@ -113,7 +114,7 @@ LOCAL_STATIC_LIBRARIES := \
 LOCAL_SANITIZE := signed-integer-overflow
 # First stage init is weird: it may start without stdout/stderr, and no /proc.
 LOCAL_NOSANITIZE := hwaddress
-include $(BUILD_EXECUTABLE)
+include $(BUILD_STATIC_EXECUTABLE)
 endif
 
 include $(CLEAR_VARS)

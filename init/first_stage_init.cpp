@@ -92,9 +92,10 @@ void FreeRamdisk(DIR* dir, dev_t dev) {
 }
 
 bool ForceNormalBoot() {
-    std::string cmdline;
-    android::base::ReadFileToString("/proc/cmdline", &cmdline);
-    return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+    return false;
+    //std::string cmdline;
+    //android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    //return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
 }
 
 }  // namespace
