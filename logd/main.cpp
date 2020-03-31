@@ -139,6 +139,7 @@ static int drop_privs(bool klogd, bool auditd) {
         return -1;
     }
 
+    /*
     if (setgid(AID_LOGD) != 0) {
         android::prdebug("failed to set AID_LOGD gid");
         return -1;
@@ -146,9 +147,10 @@ static int drop_privs(bool klogd, bool auditd) {
 
     if (setuid(AID_LOGD) != 0) {
         android::prdebug("failed to set AID_LOGD uid");
+	android::prdebug("errno: %s", strerror(errno));
         return -1;
     }
-
+*/
     if (cap_set_flag(caps.get(), CAP_PERMITTED, 1, cap_value, CAP_CLEAR) < 0) {
         return -1;
     }
@@ -240,13 +242,15 @@ static void* reinit_thread_start(void* /*obj*/) {
         android::prdebug(
             "logd.daemon: failed to set AID_SYSTEM AID_PACKAGE_INFO groups");
     }
+    /*
     if (setgid(AID_LOGD) != 0) {
         android::prdebug("logd.daemon: failed to set AID_LOGD gid");
     }
     if (setuid(AID_LOGD) != 0) {
         android::prdebug("logd.daemon: failed to set AID_LOGD uid");
+	android::prdebug("errno: %s", strerror(errno));
     }
-
+*/
     cap_t caps = cap_init();
     (void)cap_clear(caps);
     (void)cap_set_proc(caps);
