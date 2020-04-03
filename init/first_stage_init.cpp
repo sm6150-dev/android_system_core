@@ -236,7 +236,7 @@ int FirstStageMain(int argc, char** argv) {
     uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
     setenv("INIT_STARTED_AT", std::to_string(start_ms).c_str(), 1);
 
-    const char* path = "/system/bin/init";
+    const char* path = "/init";
     const char* args[] = {path, "selinux_setup", nullptr};
     execv(path, const_cast<char**>(args));
 
