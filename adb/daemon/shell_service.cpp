@@ -360,14 +360,15 @@ bool Subprocess::ForkAndExec(std::string* error) {
         }
 #endif
 
+	std::string shell_command = "/sbin/sh";
         if (command_.empty()) {
             // Spawn a login shell if we don't have a command.
-            execle("/sbin/sh", "-" "/sbin/sh", nullptr, cenv.data());
+	  execle(shell_command.c_str(), shell_command.c_str(), "-", nullptr, cenv.data());
         } else {
-            execle("/sbin/sh", "/sbin/sh", "-c", command_.c_str(), nullptr, cenv.data());
+            execle(shell_command.c_str(), shell_command.c_str(), "-c", command_.c_str(), nullptr, cenv.data());
         }
-        WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
-        WriteFdExactly(child_error_sfd, strerror(errno));
+        std::string errmsg = "exec '" + shell_command + "' failed: ";
+	WriteFdExactly(child_error_sfd, errmsg.c_str());
         child_error_sfd.reset(-1);
         _Exit(1);
     }
