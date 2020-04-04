@@ -362,9 +362,9 @@ bool Subprocess::ForkAndExec(std::string* error) {
 
         if (command_.empty()) {
             // Spawn a login shell if we don't have a command.
-            execle(_PATH_BSHELL, "-" _PATH_BSHELL, nullptr, cenv.data());
+            execle("/sbin/sh", "-" "/sbin/sh", nullptr, cenv.data());
         } else {
-            execle(_PATH_BSHELL, _PATH_BSHELL, "-c", command_.c_str(), nullptr, cenv.data());
+            execle("/sbin/sh", "/sbin/sh", "-c", command_.c_str(), nullptr, cenv.data());
         }
         WriteFdExactly(child_error_sfd, "exec '" _PATH_BSHELL "' failed: ");
         WriteFdExactly(child_error_sfd, strerror(errno));
