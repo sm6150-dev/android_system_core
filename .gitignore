@@ -1,2 +1,4 @@
 *~
 *.pyc
+libunwindstack/tests/files/offline/jit_debug_x86/libartd.so
+libunwindstack/tests/files/offline/jit_debug_x86_32/libartd.so
