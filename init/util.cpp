@@ -473,8 +473,14 @@ void InitKernelLogging(char** argv) {
 }
 
 bool IsRecoveryMode() {
-    return true;
-    //return access("/sbin/recovery", F_OK) == 0;
+    std::string cmdline;
+    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    bool recovery_mode = cmdline.find("androidboot.force_normal_boot=1") == std::string::npos;
+    bool twrp_fastboot = cmdline.find("twrpfastboot=1") != std::string::npos;
+    PLOG(ERROR) << "IsRecoveryMode::recovery_mode: " << recovery_mode;
+    PLOG(ERROR) << "IsRecoveryMode::twrp_fastboot: " << twrp_fastboot;
+    return recovery_mode || twrp_fastboot;
+    //return true;
 }
 
 }  // namespace init

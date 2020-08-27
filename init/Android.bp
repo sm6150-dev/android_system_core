@@ -172,7 +172,7 @@ cc_binary {
             exclude_shared_libs: ["libbinder", "libutils"],
         },
     },
-    ldflags: ["-Wl,--rpath,/sbin/"],
+    ldflags: ["-Wl,--rpath,/system/bin/"],
 }
 
 // Tests

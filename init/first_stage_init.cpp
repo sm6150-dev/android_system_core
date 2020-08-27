@@ -33,6 +33,7 @@
 #include <android-base/chrono_utils.h>
 #include <android-base/file.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <private/android_filesystem_config.h>
 
 #include "debug_ramdisk.h"
@@ -42,6 +43,7 @@
 #include "util.h"
 
 using android::base::boot_clock;
+using android::base::GetProperty;
 
 using namespace std::literals;
 
@@ -92,10 +94,14 @@ void FreeRamdisk(DIR* dir, dev_t dev) {
 }
 
 bool ForceNormalBoot() {
-    return false;
-    //std::string cmdline;
-    //android::base::ReadFileToString("/proc/cmdline", &cmdline);
-    //return cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+    std::string cmdline;
+    android::base::ReadFileToString("/proc/cmdline", &cmdline);
+    bool twrp_fastboot = cmdline.find("twrpfastboot=1") == std::string::npos;
+    bool normal_boot = cmdline.find("androidboot.force_normal_boot=1") != std::string::npos;
+    PLOG(ERROR) << "ForceNormalBoot::twrp_fastboot: " << twrp_fastboot;
+    PLOG(ERROR) << "ForceNormalBoot::normal_boot: " << normal_boot;
+    return twrp_fastboot && normal_boot;
+    //return false;
 }
 
 }  // namespace
@@ -236,7 +242,8 @@ int FirstStageMain(int argc, char** argv) {
     uint64_t start_ms = start_time.time_since_epoch().count() / kNanosecondsPerMillisecond;
     setenv("INIT_STARTED_AT", std::to_string(start_ms).c_str(), 1);
 
-    const char* path = "/init";
+    const char* path = "/system/bin/init";
+
     const char* args[] = {path, "selinux_setup", nullptr};
     execv(path, const_cast<char**>(args));
 
