@@ -531,11 +531,12 @@ int SetupSelinux(char** argv) {
     // store SELabels in their xattrs, such as ext4 do not need an explicit restorecon here,
     // but other file systems do.  In particular, this is needed for ramdisks such as the
     // recovery image for A/B devices.
-    if (selinux_android_restorecon("/init", 0) == -1) {
-        PLOG(FATAL) << "restorecon failed of /sbin/init failed";
+    const char* path = "/system/bin/init";
+
+    if (selinux_android_restorecon(path, 0) == -1) {
+        PLOG(FATAL) << "restorecon failed of /init failed";
     }
 
-    const char* path = "/init";
     const char* args[] = {path, "second_stage", nullptr};
     execv(path, const_cast<char**>(args));
 

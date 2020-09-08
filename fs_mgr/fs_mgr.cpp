@@ -70,10 +70,10 @@
 #define KEY_LOC_PROP   "ro.crypto.keyfile.userdata"
 #define KEY_IN_FOOTER  "footer"
 
-#define E2FSCK_BIN      "/sbin/e2fsck"
-#define F2FS_FSCK_BIN   "/sbin/fsck.f2fs"
-#define MKSWAP_BIN      "/sbin/mkswap"
-#define TUNE2FS_BIN     "/sbin/tune2fs"
+#define E2FSCK_BIN      "/system/bin/e2fsck"
+#define F2FS_FSCK_BIN   "/system/bin/fsck.f2fs"
+#define MKSWAP_BIN      "/system/bin/mkswap"
+#define TUNE2FS_BIN     "/system/bin/tune2fs"
 
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
 
